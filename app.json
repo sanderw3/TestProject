@@ -4,6 +4,7 @@
     "slug": "TestProject",
     "version": "1.0.0",
     "orientation": "portrait",
+    "engine": "hermes",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
