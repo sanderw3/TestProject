@@ -1,46 +1,38 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue, remove} from "firebase/database";
-import { User } from "../Model/User";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref, set } from "firebase/database";
+
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
+
 // Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyBZ5_eBIAKm5VGB4RHqSB42elJoDBm7in0",
-  authDomain: "myfirstapp-858ad.firebaseapp.com",
-  databaseURL: "https://myfirstapp-858ad-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "myfirstapp-858ad",
-  storageBucket: "myfirstapp-858ad.appspot.com",
-  messagingSenderId: "389922398932",
-  appId: "1:389922398932:web:b4a1320e7a9609f311d141"
+  apiKey: "AIzaSyDQzUW-1hs1g0KAS3zIx8muKoZ1wgoCj-k",
+  authDomain: "testproject-3d570.firebaseapp.com",
+  projectId: "testproject-3d570",
+  storageBucket: "testproject-3d570.appspot.com",
+  messagingSenderId: "880541326271",
+  appId: "1:880541326271:web:bf2649024799ea4ba89f0a",
+  measurementId: "G-7WW7QERY9Y"
 };
 
-
 // Initialize Firebase
-const DBapp = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const database = getDatabase(app);
 
-// write data to the database
-export function writeUserData(user: User) {
-  const db = getDatabase(DBapp);
-  set(ref(db, 'Users/' + user.userId), {
-    username: user.name,
-    email: user.email,
-    profile_picture : user.imageUrl
+export function writeUserData(userId, name, email, imageUrl) {
+  const db = getDatabase();
+  set(ref(db, 'users/' + userId), {
+    username: name,
+    email: email,
+    profile_picture : imageUrl
   });
 }
 
-// read data from the database
-export function readUserData(userId: number) {
-  const db = getDatabase(DBapp);
-  const starCountRef = ref(db, 'Users/' + userId);
-  onValue(starCountRef, (snapshot) => {
-    const data = snapshot.val();
-    console.log(data);
-  });
-}
-
-// delete data from the database
-export function deleteUserData(userId: number) {
-  const db = getDatabase(DBapp);
-  remove(ref(db, 'Users/' + userId));
-}
+export default auth
