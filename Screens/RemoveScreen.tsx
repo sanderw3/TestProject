@@ -1,19 +1,18 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, Text, View, TextInput} from 'react-native';
-import { writeUserData, deleteUserData, readUserData } from '../Database/Firebase';
-import { User } from '../Model/User';
+import { deleteUserData } from '../Database/Firebase';
 
 
-function handleButtonClick(id: number) {
+function handleButtonClick(id: string) {
     console.log("Deleting user: " + id);
     deleteUserData(id);
 }
 
 
 
-export default function App() {
-  const [ID, setID] = React.useState(0);
+export default function RemoveScreen() {
+  const [ID, setID] = React.useState("");
   
   return (
     <View style={styles.container}>
@@ -22,7 +21,7 @@ export default function App() {
         <TextInput
           style={{height: 40, borderColor: 'gray', borderWidth: 1}}
           placeholder="Enter Name"
-          onChangeText={(text) => setID(Number(text))}
+          onChangeText={(text) => setID(text)}
         />
 
       <Button
