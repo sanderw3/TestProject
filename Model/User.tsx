@@ -1,15 +1,24 @@
 
 export class User {
-  userId: string;
-  name: string;
-  email: string;
-  imageUrl: string;
+  classID:string;
+  fName:string;
+  lName:string;
+  DOB:string;
+  className:string;
+  score:string;
+  grade:string;
 
-  constructor(userId: string, name: string, email: string, imageUrl: string) {
+  constructor(classID:string, fName:string, lName:string, DOB:string, className:string, score:string, grade:string) {
+    this.classID = classID;
+    this.fName = fName;
+    this.lName = lName;
+    this.DOB = DOB;
+    this.className = className;
+    this.score = score;
+    this.grade = grade;
+  }
 
-    this.userId = userId;
-    this.name = name;
-    this.email = email;
-    this.imageUrl = imageUrl;
+  missingParameters() {
+    return !(this.classID && this.fName && this.lName  && this.DOB  && this.className  && this.score  && this.grade );
   }
 }

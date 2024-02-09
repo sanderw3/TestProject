@@ -5,6 +5,7 @@ import { deleteUserData } from '../Database/Firebase';
 
 
 function handleButtonClick(id: string) {
+  if (!id) { return; }
     console.log("Deleting user: " + id);
     deleteUserData(id);
 }
@@ -16,14 +17,12 @@ export default function RemoveScreen() {
   
   return (
     <View style={styles.container}>
-
-
-        <TextInput
-          style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-          placeholder="Enter Name"
-          onChangeText={(text) => setID(text)}
-        />
-
+      <TextInput
+        style={styles.input}
+        placeholder="Enter Id"
+        onChangeText={(text) => setID(text)}
+      />
+      
       <Button
         onPress={() => handleButtonClick(ID)}
         title="Delete User"
@@ -42,5 +41,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
+    width: 200
+  }
 });
 

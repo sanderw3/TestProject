@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { initializeAuth, getAuth } from "firebase/auth";
 import { getDatabase, ref, set, remove } from "firebase/database";
+import { User } from "../Model/User";
 // import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -22,22 +23,18 @@ const firebaseConfig = {
   measurementId: "G-7WW7QERY9Y"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-// const auth = initializeAuth(app, {
-//   // to add persistance (for like "remember me")
-//   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-// });
 const auth = getAuth(app);
-const database = getDatabase(app);
+const db = getDatabase(app);
 
 
-function writeUserData(username: string, id: string) {
-
-  const db = getDatabase();
-  set(ref(db, 'users/' + id), {
-    username: username
+async function writeUserData(user:User) {
+  await set(ref(db, user.classID + '/' + user.fName + " " + user.lName), {
+    DOB : user.DOB,
+    className : user.className,
+    score : user.score,
+    grade : user.grade
   }).catch((error) => {
     console.log(error.message);
   });
@@ -45,16 +42,15 @@ function writeUserData(username: string, id: string) {
 
 
 function readUserData(userId: string) {
-  return ref(getDatabase(), 'users/' + userId);
+  return ref(db, 'users/' + userId);
 }
 
 
-function deleteUserData(userId: string) {
+async function deleteUserData(userId: string) {
   if (!userId) {
     return;
   }
-  const db = getDatabase();
-  remove(ref(db, 'users/' + userId)).catch((error) => {
+  await remove(ref(db, 'users/' + userId)).catch((error) => {
     console.log(error.message);
   });
 }
