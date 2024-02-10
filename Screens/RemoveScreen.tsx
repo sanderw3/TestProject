@@ -1,30 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, Text, View, TextInput} from 'react-native';
 import { deleteUserData } from '../Database/Firebase';
 
 
-function handleButtonClick(id: string) {
-  if (!id) { return; }
-    console.log("Deleting user: " + id);
-    deleteUserData(id);
+async function handleButtonClick(classID: string, Name: string) {
+  if (!classID) { return; }
+    console.log("Deleting student: " + Name + " in class: " + classID);
+    deleteUserData(classID, Name);
 }
 
 
-
 export default function RemoveScreen() {
-  const [ID, setID] = React.useState("");
-  
+  const [classID, setID] = React.useState("");
+  const [Name, setName] = React.useState("");
+
+  useEffect(() => {
+    
+  }, []);
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Enter Id"
-        onChangeText={(text) => setID(text)}
+        placeholder="Enter classID"
+        value={classID}
+        onChangeText={setID}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Enter student name"
+        value={Name}
+        onChangeText={setName}
       />
       
       <Button
-        onPress={() => handleButtonClick(ID)}
+        onPress={() => handleButtonClick(classID, Name)}
         title="Delete User"
         color="#841584"
         accessibilityLabel="Learn more about this purple button"

@@ -1,11 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { initializeAuth, getAuth } from "firebase/auth";
-import { getDatabase, ref, set, remove } from "firebase/database";
+// import { getAnalytics } from "firebase/analytics";
+import { initializeAuth, getAuth, getReactNativePersistence } from "firebase/auth";
+import { getDatabase, ref, onValue, get, set, remove, update, DatabaseReference } from "firebase/database";
 import { User } from "../Model/User";
-// import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -24,36 +23,39 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
+// const analytics = getAnalytics(app);
+// const auth = getAuth(app);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 const db = getDatabase(app);
 
 
+
 async function writeUserData(user:User) {
-  await set(ref(db, user.classID + '/' + user.fName + " " + user.lName), {
+  await set(ref(db, user.classID + "/students/" + user.fName + " " + user.lName), {
     DOB : user.DOB,
-    className : user.className,
     score : user.score,
     grade : user.grade
   }).catch((error) => {
     console.log(error.message);
   });
+
+  await update(ref(db, user.classID), {
+    className: user.className
+  })
 }
 
 
-function readUserData(userId: string) {
-  return ref(db, 'users/' + userId);
-}
 
-
-async function deleteUserData(userId: string) {
-  if (!userId) {
+async function deleteUserData(classid: string, name:string) {
+  if (!classid) {
     return;
   }
-  await remove(ref(db, 'users/' + userId)).catch((error) => {
+  await remove(ref(db, classid + "/students/" + name)).catch((error) => {
     console.log(error.message);
   });
 }
 
-export { auth, writeUserData, readUserData, deleteUserData };
+export { auth, writeUserData, deleteUserData, db};
 

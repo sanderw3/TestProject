@@ -2,8 +2,16 @@
   "compilerOptions": {
     "paths": {
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"],
+      "BVLinearGradient": ["./node_modules/react-native-linear-gradient"]
       // "react": [ "./node_modules/@types/react" ]
-    }
+    },
+    
+    // incase typescript complains about missing types: https://stackoverflow.com/questions/41462729/typescript-react-could-not-find-a-declaration-file-for-module-react-material
+    // "typeRoots": [
+    //   "./node_modules/@types",
+    //   "./@types"
+    // ]    
+    // "noImplicitAny": false
   },
   "extends": "expo/tsconfig.base"
 }

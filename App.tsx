@@ -1,5 +1,5 @@
-import React, { useEffect} from 'react'
-import { Button, Image } from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { Button, Image, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -10,7 +10,6 @@ import { auth } from './Database/Firebase';
 import SignUpScreen from './Screens/SignUpScreen';
 import SignInScreen from './Screens/SignInScreen';
 import HomeScreen from './Screens/HomeScreen';
-
 
 
 const tab = createBottomTabNavigator();
@@ -25,19 +24,24 @@ const ScreenOptions = (picture: any) => ({
   ),
   headerRight: () => (
     <Button title="Logout" onPress={() => auth.signOut()} />
-  ),
+  )
+  // headerLeft: () => (
+  //   <MaterialCommunityIcons name="home" size={24} color="black" />
+  // )
 })
 
 
 function Tabs(){
+  const [darkmode, setdarkmode] = useState(false);
+
   return(
-    <tab.Navigator initialRouteName='Add'
+    <tab.Navigator initialRouteName='Charts'
     screenOptions={{
       tabBarActiveTintColor: 'red',
       tabBarInactiveTintColor: 'gray',
     }}
     >
-      <tab.Screen name="Home" component={HomeScreen}
+      <tab.Screen name="Charts" component={HomeScreen}
         options={ScreenOptions(require('./assets/vetle.png'))}  />
       <tab.Screen name="Add" component={AddScreen}
         options={ScreenOptions(require('./assets/vetle1.jpg'))} />
@@ -60,7 +64,7 @@ function AuthStack() {
 
 export default function App() {
   const [loggedIn, setLoggedIn] = React.useState(auth.currentUser);
-
+  
   useEffect(() => {
     const subscriber = auth.onAuthStateChanged((user) => {
       setLoggedIn(user);
