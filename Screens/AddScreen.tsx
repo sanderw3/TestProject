@@ -3,6 +3,7 @@ import { StyleSheet, Button, View, TextInput, ScrollView} from 'react-native';
 import { writeUserData} from '../Database/Firebase';
 import { StatusBar } from 'expo-status-bar';
 import { User } from '../Model/User';
+import { sendEmailVerification } from 'firebase/auth';
 
 
 const classEnum = {
@@ -40,8 +41,9 @@ function classidBYname(classStore: any, name: string) {
 }
 
 function handleButtonClick(user: User) {
-  if(user == null || user.missingParameters()) { return; }
+  if(user == null || user.missingParameters()) { return false; }
   writeUserData(user);
+  return true;
 }
 
 
@@ -90,7 +92,29 @@ export default function AddScreen() {
       {inputFields(lName, setlName, "Enter last name")}
       {inputFields(DOB, setDOB, "Enter DOB")}
 
-      {inputFields(score, 
+
+      <TextInput
+      style={styles.input }
+        keyboardType='numeric'  
+        placeholder={"Enter score"}
+        value={score}
+        onChangeText={(val: string) => {
+          setscore(val);
+          const scor = parseInt(val);
+          if (scor >= 0 && scor <= 39)
+            setgrade("F")
+          else if (scor >= 40 && scor <= 59)
+            setgrade("D")
+          else if (scor >= 60 && scor <= 79)
+            setgrade("C")
+          else if (scor >= 80 && scor <= 89)
+            setgrade("B")
+          else if (scor >= 90 && scor <= 100)
+            setgrade("A")
+        }}  
+      />
+
+      {/* {inputFields(score, 
         (val: string) => {
           setscore(val);
           const scor = parseInt(val);
@@ -104,13 +128,29 @@ export default function AddScreen() {
             setgrade("B")
           else if (scor >= 90 && scor <= 100)
             setgrade("A")
-        }, "Enter score")}
+        }, "Enter score")} */}
 
 
       {inputFields(grade, setgrade, "Enter grade")}
 
       <Button
-        onPress={() => handleButtonClick(new User(classID, fName, lName, DOB, className, score, grade))}
+        onPress={() => {
+          if (!handleButtonClick(new User(classID, fName, lName, DOB, className, score, grade)))
+            alert("All fields must be filled");
+          else if (parseInt(score) < 0 || parseInt(score) > 100)
+            alert("Score must be between 0 and 100");
+          else {
+            alert("User added successfully");
+            setclassID("");
+            setfName("");
+            setlName("");
+            setDOB("");
+            setclassName("");
+            setscore("");
+            setgrade("");
+            }
+          }
+        }
         title="Add User"
         color="#841584"
       />
@@ -139,6 +179,7 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    marginTop: 10
   }
 });

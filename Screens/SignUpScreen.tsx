@@ -1,9 +1,8 @@
 import React from 'react';
-import { StyleSheet, Button, Text, View, TextInput} from 'react-native';
+import { StyleSheet, Button, Text, View, TextInput, Image} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { auth } from "../Database/Firebase";
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import SignInScreen from './SignInScreen';
 
 
 
@@ -15,8 +14,10 @@ function handleButtonClick(email: string, password: string) {
     const errorCode = error.code;
     const errorMessage = error.message;
     console.log(errorCode, errorMessage);
+    return false;
   })
-  
+
+  return true; 
 }
 
 
@@ -29,7 +30,10 @@ export default function SignUpScreen({ navigation }) {
     return (
         <View style={styles.container}>
 
-            
+          <Image 
+          source={require('../assets/vetle2.jpg')} 
+          style={{width: 300, height: 300, tintColor: null}}  />     
+                
             <TextInput
               style={styles.input}
               placeholder="Enter Email"
@@ -42,15 +46,20 @@ export default function SignUpScreen({ navigation }) {
             />
 
           <Button
-            onPress={() => handleButtonClick(email, password)}
+            onPress={() => {
+              if(!handleButtonClick(email, password))
+                alert("Do better");
+            }}
             title="Sign up"
             color="#841584"
           />
-          <Button
-            onPress={() => navigation.navigate("SignIn")}
-            title="Sign in instead"
-            color="#841584"
-          />
+          <View style={{marginTop: 10}}>  
+            <Button
+              onPress={() => navigation.navigate("SignIn")}
+              title="Sign in instead"
+              color="#841584"
+            />
+          </View>
           <StatusBar style="auto" />
         </View>
       );

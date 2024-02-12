@@ -1,83 +1,26 @@
-import React, { useEffect } from 'react'
-import { StyleSheet, Text, View,  ScrollView} from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import React, { useEffect } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { DataTable } from 'react-native-paper';
 import { db } from '../Database/Firebase';
 import { onValue, ref } from "firebase/database";
-import { BarChart } from 'react-native-chart-kit';
 
 
-type info = {
-    classId: string,
-    class : object
-}
-
-
-const ToBarData = (students: object) => {
-
-    const returningData = {
-        labels: ["A", "B", "C", "D", "E", "F"],
-        datasets:[
-            {
-            data: [0,0,0,0,0,0]
-            }
-        ]
-    }
-
-    //For each student
-    Object.keys(students).forEach((studentName) => {
-        const grade = students[studentName]["grade"];
-        switch(grade){
-            case "A":
-                returningData.datasets[0].data[0]++;
-                break;
-            case "B":
-                returningData.datasets[0].data[1]++;
-                break;
-            case "C":
-                returningData.datasets[0].data[2]++;
-                break;
-            case "D":
-                returningData.datasets[0].data[3]++;
-                break;
-            case "E":
-                returningData.datasets[0].data[4]++;
-                break;
-            case "F":
-                returningData.datasets[0].data[5]++;
-                break;
+const RenderEachStudentInClass = (users : any, className: string) =>{
+    {try{
+        return Object.keys(users[className]["students"]).map((student) => (
+            <DataTable.Row key={student}>
+                <DataTable.Cell style={{alignItems: "center", justifyContent: "center"}}>{student}</DataTable.Cell>
+                <DataTable.Cell style={{paddingLeft: 50, paddingRight: 50, alignItems: "center", justifyContent: "center"}}>{className}</DataTable.Cell>
+                <DataTable.Cell style={{alignItems: "center", justifyContent: "center"}}>{users[className]["students"][student]["grade"]}</DataTable.Cell>
+            </DataTable.Row>
+                
+                        
+        ))
+        }catch(err){
+            return null;
         }
-    });
-
-    return returningData;
+    }
 }
-
-const chartConfig = {
-    backgroundGradientFrom: '#FFFFFF',
-    backgroundGradientTo: '#FFFFFF',
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    barPercentage: 0.7,
-    decimalPlaces: 2,
-};
-
-
-const GradeChart = (props: info) => {
-    return (
-      <View style={styles.chart}>
-        <Text style={styles.text}> {props.class["className"]}</Text>
-        <BarChart
-        data={ToBarData(props.class["students"])}
-        width={300}
-        height={250}
-        yAxisLabel=""
-        yAxisSuffix=""
-        // yAxisInterval={2}
-        yLabelsOffset={20}
-        chartConfig={chartConfig}
-        
-        />
-      </View>
-    );
-  };
 
 
 export default function HomeScreen() {
@@ -92,40 +35,42 @@ export default function HomeScreen() {
         return () => unsubscribe();
       }, [db]);
 
-    return (
-        <View style={styles.container}>
-            <ScrollView  style={{width: "100%"}} contentContainerStyle={styles.scrollView}>
-                {Object.keys(users).map((className) => (
-                    <GradeChart class={users[className]} classId={className} />
-                ))}
-                <StatusBar style="auto" />
-            </ScrollView>
-        </View>
-    );
+
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        <DataTable style={{width: "100%"}}>
+            <DataTable.Header style={{backgroundColor: 'white'}}>
+            <DataTable.Title style={styles.title} > Student </DataTable.Title>
+            <DataTable.Title style={{paddingLeft: 50}} > class </DataTable.Title>
+            <DataTable.Title style={{paddingLeft: 40}} > Grade </DataTable.Title>
+            </DataTable.Header>
+
+
+
+            {Object.keys(users).map((className, index) => (
+                <React.Fragment key={index}>
+                {RenderEachStudentInClass(users, className)}
+                <DataTable.Row>
+                    <DataTable.Cell> </DataTable.Cell>
+                </DataTable.Row>
+                </React.Fragment>
+            ))}
+
+        </DataTable>
+      </ScrollView>
+    </View>
+  );
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    scrollView: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: 500
-    },
-    chart: {
-        marginBottom: 30,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    text: {
-        fontSize: 15,
-        fontWeight: 'bold',
-    }
-})
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+    paddingHorizontal: 30,
+  },
+  title: {
+    paddingLeft: 20,
+    // justifyContent: "center",
+  }
+});

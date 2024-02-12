@@ -9,6 +9,7 @@ import RemoveScreen from './Screens/RemoveScreen';
 import { auth } from './Database/Firebase';
 import SignUpScreen from './Screens/SignUpScreen';
 import SignInScreen from './Screens/SignInScreen';
+import ChartScreen from './Screens/ChartScreen';
 import HomeScreen from './Screens/HomeScreen';
 
 
@@ -35,13 +36,15 @@ function Tabs(){
   const [darkmode, setdarkmode] = useState(false);
 
   return(
-    <tab.Navigator initialRouteName='Charts'
+    <tab.Navigator initialRouteName='Data'
     screenOptions={{
       tabBarActiveTintColor: 'red',
       tabBarInactiveTintColor: 'gray',
     }}
     >
-      <tab.Screen name="Charts" component={HomeScreen}
+      <tab.Screen name="Data" component={HomeScreen} 
+        options={ScreenOptions(require('./assets/vetle2.jpg'))} />
+      <tab.Screen name="Charts" component={ChartScreen}
         options={ScreenOptions(require('./assets/vetle.png'))}  />
       <tab.Screen name="Add" component={AddScreen}
         options={ScreenOptions(require('./assets/vetle1.jpg'))} />

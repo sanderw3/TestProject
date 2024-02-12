@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Button, Text, View, TextInput} from 'react-native';
 import { deleteUserData } from '../Database/Firebase';
+import { isMissingDeclaration } from 'typescript';
 
 
-async function handleButtonClick(classID: string, Name: string) {
-  if (!classID) { return; }
+function handleButtonClick(classID: string, Name: string) {
+  if (!classID || !Name) { return false; }
     console.log("Deleting student: " + Name + " in class: " + classID);
     deleteUserData(classID, Name);
+    return true;
 }
 
 
@@ -35,7 +37,11 @@ export default function RemoveScreen() {
       />
       
       <Button
-        onPress={() => handleButtonClick(classID, Name)}
+        onPress={() => {
+          if (!handleButtonClick(classID, Name)){
+            alert("please fill in all fields");
+          }
+        }}
         title="Delete User"
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
