@@ -18,7 +18,7 @@ const ToBarData = (students: object) => {
         labels: ["A", "B", "C", "D", "E", "F"],
         datasets:[
             {
-            data: [0,0,0,0,0,0]
+                data: [0,0,0,0,0,0]
             }
         ]
     }
@@ -28,7 +28,7 @@ const ToBarData = (students: object) => {
         Object.keys(students).forEach((studentName) => {
             const grade = students[studentName]["grade"];
             if (grade != null){ 
-                switch(grade){
+                switch(grade){ 
                     case "A": returningData.datasets[0].data[0]++; break;
                     case "B": returningData.datasets[0].data[1]++; break;
                     case "C": returningData.datasets[0].data[2]++; break;

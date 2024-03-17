@@ -30,14 +30,13 @@ const auth = initializeAuth(app, {
 });
 const db = getDatabase(app);
 
-
-
 async function writeUserData(user:User) {
   await set(ref(db, user.classID + "/students/" + user.fName + " " + user.lName), {
     DOB : user.DOB,
     score : user.score,
     grade : user.grade
   }).catch((error) => {
+    // this is 
     console.log(error.message);
   });
 

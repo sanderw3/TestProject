@@ -13,8 +13,6 @@ const RenderEachStudentInClass = (users : any, className: string) =>{
                 <DataTable.Cell style={{paddingLeft: 50, paddingRight: 50, alignItems: "center", justifyContent: "center"}}>{className}</DataTable.Cell>
                 <DataTable.Cell style={{alignItems: "center", justifyContent: "center"}}>{users[className]["students"][student]["grade"]}</DataTable.Cell>
             </DataTable.Row>
-                
-                        
         ))
         }catch(err){
             return null;
@@ -45,8 +43,6 @@ export default function HomeScreen() {
             <DataTable.Title style={{paddingLeft: 50}} > class </DataTable.Title>
             <DataTable.Title style={{paddingLeft: 40}} > Grade </DataTable.Title>
             </DataTable.Header>
-
-
 
             {Object.keys(users).map((className, index) => (
                 <React.Fragment key={index}>

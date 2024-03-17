@@ -4,6 +4,8 @@ import { writeUserData} from '../Database/Firebase';
 import { StatusBar } from 'expo-status-bar';
 import { User } from '../Model/User';
 import { sendEmailVerification } from 'firebase/auth';
+import InitDatabase from '../Database/Sqlite';
+import * as SQLite from 'expo-sqlite';
 
 
 const classEnum = {
@@ -40,9 +42,36 @@ function classidBYname(classStore: any, name: string) {
   return null;
 }
 
-function handleButtonClick(user: User) {
-  if(user == null || user.missingParameters()) { return false; }
-  writeUserData(user);
+async function handleButtonClick(user: User) {
+  // if(user == null || user.missingParameters()) { return false; }
+  // writeUserData(user);
+
+  // this opens (or creates) the database
+  const db = SQLite.openDatabase('app.db');
+  
+  // decides whether access to writing or reading is granted
+  const readOnly = false;
+
+  // regular SQL statements
+  db.transactionAsync(async tx => {
+    const result = await tx.executeSqlAsync('SELECT * FROM Contents', []);
+    console.log('Count:', result.rows[0]);
+  }, readOnly);
+
+
+  // const readOnly = false;
+  // await db.transactionAsync(async tx => {
+  //   // await tx.executeSqlAsync('CREATE TABLE IF NOT EXISTS Contents (id INTEGER PRIMARY KEY AUTOINCREMENT, classID TEXT, fName TEXT, lName TEXT, DOB TEXT, className TEXT, score TEXT, grade TEXT)');
+  //   const result = await tx.executeSqlAsync('SELECT COUNT(*) FROM Contents', []);
+  //   console.log('Count:', result.rows[0]['COUNT(*)']);  },
+  //   readOnly)
+
+  // .catch((error) => {
+  //   console.log(error);
+  // });
+
+  
+
   return true;
 }
 
@@ -134,8 +163,8 @@ export default function AddScreen() {
       {inputFields(grade, setgrade, "Enter grade")}
 
       <Button
-        onPress={() => {
-          if (!handleButtonClick(new User(classID, fName, lName, DOB, className, score, grade)))
+        onPress={async () => {
+          if (! await handleButtonClick(new User(classID, fName, lName, DOB, className, score, grade)))
             alert("All fields must be filled");
           else if (parseInt(score) < 0 || parseInt(score) > 100)
             alert("Score must be between 0 and 100");

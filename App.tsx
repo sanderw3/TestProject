@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Button, Image, Text } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react'
+import { Button, Image, TouchableOpacity, View, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -11,10 +11,15 @@ import SignUpScreen from './Screens/SignUpScreen';
 import SignInScreen from './Screens/SignInScreen';
 import ChartScreen from './Screens/ChartScreen';
 import HomeScreen from './Screens/HomeScreen';
+import { createContext } from 'vm';
+import InitDatabase from './Database/Sqlite';
 
 
 const tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+// const t = createContext();
+
+
 
 
 const ScreenOptions = (picture: any) => ({
@@ -25,10 +30,12 @@ const ScreenOptions = (picture: any) => ({
   ),
   headerRight: () => (
     <Button title="Logout" onPress={() => auth.signOut()} />
+  ),
+  headerLeft: () => (
+    <TouchableOpacity onPress={() => console.log('pressed')}>
+      <MaterialCommunityIcons style={{paddingLeft: 20}} name="home" size={24} color="black" />
+    </TouchableOpacity>
   )
-  // headerLeft: () => (
-  //   <MaterialCommunityIcons name="home" size={24} color="black" />
-  // )
 })
 
 
@@ -55,6 +62,15 @@ function Tabs(){
 }
 
 
+function Yeses () {
+  return (
+    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'white'}}>
+      <Text>Yes</Text>
+    </View>
+  );
+}
+
+
 function AuthStack() {
   return (
     <Stack.Navigator initialRouteName='SignIn'>
@@ -67,18 +83,26 @@ function AuthStack() {
 
 export default function App() {
   const [loggedIn, setLoggedIn] = React.useState(auth.currentUser);
+    const [teset, setTeset] = useState(false);
+    InitDatabase()
+    .then(() => console.log("Database created"))
+    .catch((error) => console.log(error.message));
   
   useEffect(() => {
     const subscriber = auth.onAuthStateChanged((user) => {
       setLoggedIn(user);
     });
+
+    // setTeset(1);
+    
     return subscriber;
   }, []);
 
+  
 
   return (
     <NavigationContainer>
-      {loggedIn ? <Tabs/> : <AuthStack/>}
+      {loggedIn ? (teset ? <Yeses/> : <Tabs/>) : <AuthStack/>}
     </NavigationContainer> 
   );
 }
